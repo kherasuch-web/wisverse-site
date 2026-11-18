@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="ur" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WisVerse — PDF Reader &amp; Editor</title>
+<meta name="description" content="WisVerse (Wisdom Universe): a private, ad-free PDF reader and editor for Android, in Urdu and English.">
+<link rel="icon" href="icon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@500;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Sora:wght@500;650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: a midnight band carries the name and promise; below it, plain readable columns on paper-blue. */
+:root{
+  --night:#141A33; --night-2:#1E2A5A; --gold:#B9851A; --gold-bright:#E0A526;
+  --bg:#F3F4F8; --surface:#FFFFFF; --ink:#1A1F36; --muted:#565C74; --line:#DDE0EA;
+  --on-night:#FFFFFF; --on-night-muted:#C9CDE0;
+  --display-en:"Sora",system-ui,sans-serif; --body-en:"Inter",system-ui,-apple-system,sans-serif;
+  --display-ur:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif; --body-ur:"Noto Naskh Arabic","Noto Nastaliq Urdu",serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1122; --surface:#151A31; --ink:#E9EBF3; --muted:#A4A9BF; --line:#283052; --gold:#E0A526; --night:#0A0E1E; --night-2:#1A2450; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0D1122; --surface:#151A31; --ink:#E9EBF3; --muted:#A4A9BF; --line:#283052; --gold:#E0A526; --night:#0A0E1E; --night-2:#1A2450; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body-en);font-size:16px;line-height:1.65;margin:0}
+body.ur{font-family:var(--body-ur);font-size:17px;line-height:1.95}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.ur .en,.en-only .ur{display:none!important}
+body:not(.ur) .ur{display:none!important}
+a{color:var(--gold)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gold-bright);outline-offset:2px;border-radius:6px}
+/* top band */
+.band{background:var(--night);color:var(--on-night)}
+.nav{display:flex;align-items:center;gap:12px;padding-block:14px}
+.nav .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--on-night);font-family:var(--display-en);font-weight:650;font-size:18px}
+.nav .brand img{width:34px;height:34px;border-radius:9px}
+.nav .sp{flex:1}
+.nav a.link{color:var(--on-night-muted);text-decoration:none;font-size:15px;padding:6px 4px}
+.nav a.link[aria-current="page"]{color:var(--on-night);border-bottom:2px solid var(--gold-bright)}
+.lang{background:transparent;color:var(--on-night);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:4px 14px;min-height:36px;font:inherit;font-size:15px;cursor:pointer}
+.hero{display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;padding-block:28px 44px}
+.hero img{width:120px;height:120px;border-radius:28px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.hero h1{margin:0;font-family:var(--display-en);font-weight:650;font-size:clamp(30px,5vw,46px);line-height:1.15;text-wrap:balance}
+.ur .hero h1{font-family:var(--display-ur);font-weight:700;font-size:clamp(28px,4.6vw,42px);line-height:1.9}
+.hero .name{color:var(--gold-bright);font-family:var(--display-en);font-size:15px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.hero p{color:var(--on-night-muted);margin:12px 0 0;max-width:58ch;font-size:17px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.badge{border:1px solid rgba(224,165,38,.55);color:var(--on-night);border-radius:999px;padding:4px 12px;font-size:14px}
+@media (max-width:560px){.hero{grid-template-columns:1fr}.hero img{width:88px;height:88px;border-radius:20px}}
+/* sections */
+main{padding-block:36px 24px}
+h2{font-family:var(--display-en);font-weight:650;font-size:24px;margin:0 0 6px;text-wrap:balance}
+.ur h2{font-family:var(--display-ur);font-weight:700;font-size:23px;line-height:2}
+h3{font-size:17px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 20px;max-width:65ch}
+.promises{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:40px}
+.promise{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.promise h3{color:var(--ink)}
+.promise p{margin:0;color:var(--muted);font-size:15px}
+.promise .k{font-family:var(--display-en);color:var(--gold);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.ur .promise .k{font-family:var(--body-ur);letter-spacing:0;font-size:14px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px 36px}
+.cols > div{min-width:0}
+.cols ul{margin:0 0 18px;padding-inline-start:20px}
+.cols li{margin:3px 0}
+.cols h3{color:var(--gold);margin-top:8px}
+.store{margin:34px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.store b{font-size:17px}
+.store p{margin:2px 0 0;color:var(--muted)}
+/* privacy */
+.policy{max-width:70ch}
+.policy section{border-top:1px solid var(--line);padding-block:16px}
+.policy h3{font-size:18px;color:var(--ink)}
+.policy p,.policy li{color:var(--ink)}
+.policy .meta{color:var(--muted);font-size:14px}
+.policy table{border-collapse:collapse;width:100%;font-size:15px}
+.tbl{overflow-x:auto}
+.policy th,.policy td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:start;vertical-align:top}
+.policy th{color:var(--muted);font-weight:600}
+.ph{background:rgba(224,165,38,.18);border-radius:4px;padding:0 4px}
+footer{border-top:1px solid var(--line);margin-top:30px;padding-block:20px 30px;color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:8px 20px}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body class="ur">
+
+
+<div class="band">
+  <div class="wrap">
+    <nav class="nav" aria-label="main">
+      <a class="brand" href="./"><img src="data:image/jpeg;base64,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" alt=""><span>WisVerse</span></a>
+      <span class="sp"></span>
+      <a class="link" href="./" data-page="home"><span class="en">Home</span><span class="ur">ہوم</span></a>
+      <a class="link" href="privacy.html" data-page="privacy"><span class="en">Privacy</span><span class="ur">پرائیویسی</span></a>
+      <button class="lang" id="langBtn" type="button"><span class="en">اردو</span><span class="ur">English</span></button>
+    </nav>
+    <div class="hero" id="hero">
+      <img src="data:image/jpeg;base64,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" alt="WisVerse logo">
+      <div>
+        <div class="name">Wisdom Universe</div>
+        <h1><span class="en">A quiet place to read your PDFs</span><span class="ur">اپنی کتابیں سکون سے پڑھنے کی جگہ</span></h1>
+        <p><span class="en">WisVerse is a PDF reader and editor made by a reader, for readers. Everything happens on your phone. No account, no ads, no tracking, and every tool is free.</span><span class="ur">وِزورس ایک PDF ریڈر اور ایڈیٹر ہے جو ایک قاری نے قاریوں کے لیے بنایا ہے۔ ہر کام آپ کے فون کے اندر ہوتا ہے۔ نہ اکاؤنٹ، نہ اشتہار، نہ ٹریکنگ، اور سب ٹولز مفت۔</span></p>
+        <div class="badges">
+          <span class="badge"><span class="en">Android</span><span class="ur">Android</span></span>
+          <span class="badge"><span class="en">اردو and English</span><span class="ur">اردو اور English</span></span>
+          <span class="badge"><span class="en">Works offline</span><span class="ur">بغیر انٹرنیٹ</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- HOME -->
+  <div id="page-home">
+    <div class="promises">
+      <div class="promise"><div class="k"><span class="en">Privacy</span><span class="ur">پرائیویسی</span></div><h3><span class="en">Your books stay with you</span><span class="ur">آپ کی کتابیں آپ کے پاس</span></h3><p><span class="en">Files, notes and highlights never leave your phone. We have no servers that see them.</span><span class="ur">فائلیں، نوٹس اور ہائی لائٹس فون سے باہر نہیں جاتیں۔ ہمارے پاس کوئی سرور نہیں جو انہیں دیکھے۔</span></p></div>
+      <div class="promise"><div class="k"><span class="en">Reading</span><span class="ur">پڑھنا</span></div><h3><span class="en">Feels like a real book</span><span class="ur">اصل کتاب جیسا احساس</span></h3><p><span class="en">Pages turn like paper, right to left for Urdu, with an open-book view when you turn the phone.</span><span class="ur">صفحے کاغذ کی طرح پلٹتے ہیں، اردو کے لیے دائیں سے بائیں، اور فون لٹائیں تو کھلی کتاب۔</span></p></div>
+      <div class="promise"><div class="k"><span class="en">Family</span><span class="ur">فیملی</span></div><h3><span class="en">Family Mode, on from the start</span><span class="ur">Family Mode، شروع سے آن</span></h3><p><span class="en">Pages with inappropriate words or pictures are covered until a PIN is entered. Checked on the phone.</span><span class="ur">نامناسب الفاظ یا تصویروں والے صفحے PIN کے بغیر نہیں کھلتے۔ جانچ فون کے اندر ہوتی ہے۔</span></p></div>
+      <div class="promise"><div class="k"><span class="en">Free</span><span class="ur">مفت</span></div><h3><span class="en">Every tool, no paywall</span><span class="ur">ہر ٹول، بغیر پیسوں کے</span></h3><p><span class="en">Scanning, OCR, PDF to Word, passwords, page tools: all included, with no ads.</span><span class="ur">اسکین، OCR، PDF سے Word، پاس ورڈ، صفحوں کا کام: سب شامل، بغیر اشتہار۔</span></p></div>
+    </div>
+
+    <h2><span class="en">What it does</span><span class="ur">ایپ کیا کرتی ہے</span></h2>
+    <p class="lead"><span class="en">The tools you reach for when you read, mark and keep documents.</span><span class="ur">پڑھنے، نشان لگانے اور کتابیں سنبھالنے کے سب ضروری ٹولز۔</span></p>
+    <div class="cols">
+      <div>
+        <h3><span class="en">Read</span><span class="ur">پڑھنا</span></h3>
+        <ul class="en"><li>All PDFs on your phone in one library, sorted by size, date or name</li><li>Book-style page turning, scroll mode, full screen, zoom</li><li>Day, sepia and night colours; picks up where you left off</li><li>Bookmarks and search inside the book</li></ul>
+        <ul class="ur"><li>فون کی ساری PDF ایک لائبریری میں، سائز، تاریخ یا نام سے ترتیب</li><li>کتاب کی طرح صفحہ پلٹنا، سکرول، پوری اسکرین، زوم</li><li>دن، سیپیا اور رات کے رنگ؛ جہاں چھوڑا وہیں سے</li><li>بک مارکس اور کتاب میں تلاش</li></ul>
+        <h3><span class="en">Mark and note</span><span class="ur">نشان اور نوٹس</span></h3>
+        <ul class="en"><li>Highlight, pen, notes and your signature</li><li>Fill in PDF forms</li><li>A diary of favourite quotes from every book</li></ul>
+        <ul class="ur"><li>ہائی لائٹ، قلم، نوٹ اور دستخط</li><li>PDF فارم بھرنا</li><li>ہر کتاب سے پسندیدہ سطروں کی ڈائری</li></ul>
+      </div>
+      <div>
+        <h3><span class="en">Scan and convert</span><span class="ur">اسکین اور تبدیلی</span></h3>
+        <ul class="en"><li>Scan pages with the camera into a PDF or pictures</li><li>Read text from pages (OCR) in Urdu and English, on the phone</li><li>PDF to Word (.docx), pictures to PDF and back</li><li>Make faint text darker and remove watermarks and dark gutters</li></ul>
+        <ul class="ur"><li>کیمرے سے صفحے اسکین کر کے PDF یا تصویریں</li><li>صفحے سے تحریر نکالنا (OCR)، اردو اور انگریزی، فون کے اندر</li><li>PDF سے Word، تصویروں سے PDF اور واپس</li><li>مدھم تحریر گہری، واٹرمارک اور بیچ کی کالی پٹی صاف</li></ul>
+        <h3><span class="en">Pages and protection</span><span class="ur">صفحے اور حفاظت</span></h3>
+        <ul class="en"><li>Reorder, rotate, remove, split and join pages</li><li>Lock a PDF with a password, or remove it</li><li>Watermark, header, footer and page numbers</li></ul>
+        <ul class="ur"><li>صفحے آگے پیچھے، گھمانا، ہٹانا، الگ اور جوڑنا</li><li>PDF پر پاس ورڈ لگانا یا ہٹانا</li><li>واٹرمارک، ہیڈر، فوٹر اور صفحہ نمبر</li></ul>
+      </div>
+    </div>
+
+    <div class="store">
+      <div>
+        <b><span class="en">Coming soon to Google Play and the Samsung Galaxy Store</span><span class="ur">جلد Google Play اور Samsung Galaxy Store پر</span></b>
+        <p><span class="en">Free, with no ads and no in-app purchases.</span><span class="ur">مفت، نہ اشتہار، نہ ایپ کے اندر خریداری۔</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRIVACY -->
+  <div id="page-privacy" hidden>
+    <div class="policy">
+      <h2><span class="en">Privacy Policy</span><span class="ur">پرائیویسی پالیسی</span></h2>
+      <p class="meta"><span class="en">WisVerse (Wisdom Universe) · Effective 18 November 2026</span><span class="ur">وِزورس (Wisdom Universe) · نافذ: 18 نومبر 2026</span></p>
+
+      <section>
+        <h3><span class="en">In short</span><span class="ur">مختصر بات</span></h3>
+        <p class="en">WisVerse does not collect, store or share any personal data. There is no account, no advertising and no analytics. Your files, notes, highlights, quotes and settings are kept on your own device.</p>
+        <p class="ur">وِزورس کوئی ذاتی معلومات جمع، محفوظ یا کسی کو نہیں دیتی۔ نہ اکاؤنٹ ہے، نہ اشتہار، نہ کوئی تجزیاتی ٹریکنگ۔ آپ کی فائلیں، نوٹس، ہائی لائٹس، کوٹیشنز اور ترتیبات آپ کے اپنے فون پر رہتی ہیں۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">What stays on your device</span><span class="ur">کیا فون پر ہی رہتا ہے</span></h3>
+        <p class="en">PDF files you open, files the app creates (saved in Documents/WisVerse), your marks and notes, bookmarks, reading positions, quotes, your signature, your Family Mode PIN (stored only as a hash) and app settings. None of this is sent to us or to anyone else by the app.</p>
+        <p class="ur">آپ کی کھولی ہوئی PDF، ایپ کی بنائی ہوئی فائلیں (Documents/WisVerse میں)، نشان اور نوٹس، بک مارکس، پڑھنے کی جگہ، کوٹیشنز، دستخط، Family Mode کا PIN (صرف ایک کوڈ کی شکل میں، اصل نمبر نہیں) اور ترتیبات۔ ایپ ان میں سے کچھ بھی ہمیں یا کسی اور کو نہیں بھیجتی۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Permissions and why</span><span class="ur">اجازتیں اور ان کی وجہ</span></h3>
+        <div class="tbl"><table>
+          <thead><tr><th><span class="en">Permission</span><span class="ur">اجازت</span></th><th><span class="en">Used for</span><span class="ur">کس لیے</span></th></tr></thead>
+          <tbody>
+            <tr><td><span class="en">All files access</span><span class="ur">تمام فائلوں تک رسائی</span></td><td><span class="en">To list the PDF files on your phone in the library, and to delete a file only when you ask. Files are read on the phone only.</span><span class="ur">لائبریری میں فون کی PDF فائلیں دکھانے کے لیے، اور آپ کے کہنے پر ہی کوئی فائل ڈیلیٹ کرنے کے لیے۔ فائلیں صرف فون پر پڑھی جاتی ہیں۔</span></td></tr>
+            <tr><td><span class="en">Internet</span><span class="ur">انٹرنیٹ</span></td><td><span class="en">Only when you tap Download for a text-reading (OCR) language file. The file comes from a public GitHub address and is checked after download. Nothing about you or your books is sent.</span><span class="ur">صرف تب، جب آپ OCR کی زبان کی فائل خود ڈاؤن لوڈ کریں۔ یہ فائل GitHub کے ایک عام پتے سے آتی ہے اور ڈاؤن لوڈ کے بعد جانچی جاتی ہے۔ آپ یا آپ کی کتابوں کے بارے میں کچھ نہیں بھیجا جاتا۔</span></td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h3><span class="en">Camera scanning</span><span class="ur">کیمرے سے اسکین</span></h3>
+        <p class="en">Scanning uses Google's document scanner, which is part of Google Play services on your phone. The pictures are processed on the phone and handed to WisVerse; WisVerse does not upload them. Google Play services may send Google basic diagnostic and usage information about the scanner, under Google's own privacy policy (policies.google.com/privacy).</p>
+        <p class="ur">اسکین کے لیے Google کا document scanner استعمال ہوتا ہے جو فون کی Google Play services کا حصہ ہے۔ تصویریں فون پر ہی تیار ہو کر وِزورس کو ملتی ہیں؛ وِزورس انہیں کہیں نہیں بھیجتی۔ Google Play services، Google کی اپنی پرائیویسی پالیسی (policies.google.com/privacy) کے تحت، اسکینر کے بارے میں بنیادی تکنیکی اور استعمال کی معلومات Google کو بھیج سکتی ہے۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Family Mode</span><span class="ur">Family Mode</span></h3>
+        <p class="en">Family Mode checks page text and pictures with a word list and a small picture model that run entirely on the phone. Nothing is uploaded and no results are kept outside the app.</p>
+        <p class="ur">Family Mode صفحے کی تحریر اور تصویریں ایک الفاظ کی فہرست اور ایک چھوٹے ماڈل سے جانچتا ہے، جو مکمل طور پر فون کے اندر چلتے ہیں۔ کچھ اپ لوڈ نہیں ہوتا اور نتیجہ ایپ سے باہر نہیں رکھا جاتا۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Backups</span><span class="ur">بیک اپ</span></h3>
+        <p class="en">If your phone's own Google backup is turned on, Android may save the app's small settings file (bookmarks, quotes, notes, settings) to your Google account, encrypted with your screen lock. PDF files are not included. This backup is run by Android and Google, and you can turn it off in your phone's settings. You can also save a backup file yourself from the app and keep it wherever you choose.</p>
+        <p class="ur">اگر فون کا اپنا Google بیک اپ آن ہو تو Android ایپ کی چھوٹی ترتیبات والی فائل (بک مارکس، کوٹیشنز، نوٹس، ترتیبات) آپ کے Google اکاؤنٹ میں، اسکرین لاک سے تالا لگا کر، رکھ سکتا ہے۔ PDF فائلیں شامل نہیں۔ یہ بیک اپ Android اور Google چلاتے ہیں اور آپ اسے فون کی ترتیبات سے بند کر سکتے ہیں۔ آپ ایپ سے خود بھی بیک اپ فائل بنا کر جہاں چاہیں رکھ سکتے ہیں۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Sharing</span><span class="ur">شیئر کرنا</span></h3>
+        <p class="en">When you choose to share or save a file to another app, that app's own privacy policy applies to what you send it.</p>
+        <p class="ur">جب آپ خود کوئی فائل کسی دوسری ایپ کو بھیجیں یا وہاں محفوظ کریں تو اس پر اُس ایپ کی اپنی پرائیویسی پالیسی لاگو ہوتی ہے۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Children</span><span class="ur">بچے</span></h3>
+        <p class="en">WisVerse collects no personal data from anyone, including children.</p>
+        <p class="ur">وِزورس کسی سے بھی، بشمول بچوں کے، کوئی ذاتی معلومات جمع نہیں کرتی۔</p>
+      </section>
+
+      <section>
+        <h3><span class="en">Changes and contact</span><span class="ur">تبدیلیاں اور رابطہ</span></h3>
+        <p class="en">If this policy changes, the new version will be posted on this page with a new date. Questions: <span class="mail">kherasuch@gmail.com</span>. WisVerse is made by Farhan Hussain.</p>
+        <p class="ur">اگر یہ پالیسی بدلی تو نئی تاریخ کے ساتھ اسی صفحے پر لگا دی جائے گی۔ سوالات کے لیے: <span class="mail" dir="ltr">kherasuch@gmail.com</span>۔ وِزورس فرحان حسین نے بنائی ہے۔</p>
+      </section>
+    </div>
+  </div>
+
+  <footer>
+    <span><span class="en">WisVerse · Wisdom Universe · Made by Farhan Hussain</span><span class="ur">وِزورس · Wisdom Universe · بنانے والے: فرحان حسین</span></span>
+    <a href="privacy.html"><span class="en">Privacy Policy</span><span class="ur">پرائیویسی پالیسی</span></a>
+  </footer>
+</main>
+
+<script>
+(() => {
+  const get = (k, d) => { try { return localStorage.getItem(k) || d; } catch (e) { return d; } };
+  const set = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  let lang = get('wv-site-lang', 'ur');
+  function applyLang(){
+    document.body.classList.toggle('ur', lang === 'ur');
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ur' ? 'rtl' : 'ltr';
+  }
+  document.getElementById('langBtn').addEventListener('click', () => { lang = lang === 'ur' ? 'en' : 'ur'; set('wv-site-lang', lang); applyLang(); });
+  function route(){
+    const page = /privacy(\.html)?$/.test(location.pathname) || location.hash === '#privacy' ? 'privacy' : 'home';
+    document.getElementById('page-home').hidden = page !== 'home';
+    document.getElementById('page-privacy').hidden = page !== 'privacy';
+    document.getElementById('hero').hidden = page !== 'home';
+    document.querySelectorAll('.nav a.link').forEach(a => {
+      if (a.dataset.page === page) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', route);
+  applyLang(); route();
+})();
+</script>
+
+</body>
+</html>
